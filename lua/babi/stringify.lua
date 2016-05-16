@@ -10,6 +10,8 @@ local utilities = require 'babi.utilities'
 
 local class = require 'class'
 
+local inspect = require 'inspect'
+
 local tablex = require 'pl.tablex'
 local stringx = require 'pl.stringx'
 local List = require 'pl.List'
@@ -1366,6 +1368,12 @@ local function stringify(story, knowledge, config)
     if config.symbolic then
         return stringify_symbolic(story, knowledge, config)
     end
+    if config.debug then
+        return utilities.pickle(knowledge.knowledge)
+    end
+    if config.describe then
+        return knowledge:describe_all()
+    end
     local i = 1  -- The number of descriptions processed
     local j = 1  -- The number of lines output
     local clause_lines = {}  -- The line on which a clause was rendered
@@ -1439,7 +1447,27 @@ local function stringify(story, knowledge, config)
     end
     lines = tablex.map(capitalize, lines)
     lines = add_line_numbers(lines)
-    return stringx.join('\n', lines)
+
+    local out = stringx.join('\n', lines)
+
+    -- Possibly generate graph
+    if config.knowledge_graph then
+        local graph_lines = {}
+        for t = 1, knowledge.t do
+            local graph_line = knowledge:describe_graph(t)
+            graph_lines[clause_lines[knowledge.story[t]]] = graph_line
+        end
+
+        graph_lines_for_print = List()
+
+        for i,l in pairs(graph_lines) do
+            graph_lines_for_print:append('> ' .. i .. ' ' .. l)
+        end
+
+        out = out .. '\n' .. stringx.join('\n', graph_lines_for_print)
+    end
+
+    return out
 end
 
 return stringify

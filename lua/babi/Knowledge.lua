@@ -322,4 +322,79 @@ function Knowledge:current()
     return self.knowledge[self.t]
 end
 
+function Knowledge:describe(time)
+    local log = List()
+    local cknowledge = self.knowledge[time]
+    for entity,ent_state in pairs(cknowledge) do
+        -- Ignore the phantom "knowledge" entry
+        if entity ~= 'knowledge' then
+            log:append(entity.name .. ':\n')
+            for relation,targets in pairs(ent_state) do
+                -- Ignore the phantom "knowledge" entry
+                if relation ~= 'knowledge' then 
+                    log:append('\t' .. relation .. '[ ')
+                    for _,target in pairs(targets) do
+                        log:append(target.value.name .. '(' .. tostring(target.truth_value) .. '), ')
+                    end
+                    log:append(']\n')
+                end
+            end
+        end
+    end
+    return log:join("")
+end
+
+function Knowledge:describe_all()
+    local log = List()
+    for t = 1, self.t do
+        log:append(self:describe(t) .. '-------\n')
+    end
+    return log:join("")
+end
+
+function help_desc_type(thing)
+    local has = List()
+    local relevant_types = { 'actor', 'location', 'gettable', 'motivation', 'animal'}
+    for _, t in pairs(relevant_types) do
+        if thing['is_' .. t] then
+            has:append(t)
+        end
+    end
+    return has:join('-')
+end
+
+function Knowledge:describe_graph(time)
+    local nodes = List()
+    local edges = List()
+
+    local cknowledge = self.knowledge[time]
+    for entity,ent_state in pairs(cknowledge) do
+        -- Ignore the phantom "knowledge" entry
+        if entity ~= 'knowledge' then
+            nodes:append(entity.name)
+            for relation,targets in pairs(ent_state) do
+                -- Ignore the phantom "knowledge" entry
+                if relation ~= 'knowledge' then 
+                    for _,target in pairs(targets) do
+                        local negate_prefix = ""
+                        if not target.truth_value then
+                            negate_prefix = "not_"
+                        end
+                        local edgedesc = negate_prefix .. help_desc_type(entity) .. '_' .. relation .. '_' .. help_desc_type(target.value)
+                        edges:append('{ ' ..
+                            '"type":"' .. edgedesc .. '",' ..
+                            '"from":"' .. entity.name .. '",' ..
+                            '"to":"' .. target.value.name .. '",' ..
+                            '}')
+                    end
+                end
+            end
+        end
+    end
+    return '{' ..
+        '"nodes":["' .. nodes:join('","') ..'"],' ..
+        '"edges":[' .. edges:join(',') ..'],' ..
+        '}'
+end
+
 return Knowledge
