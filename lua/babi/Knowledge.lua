@@ -385,7 +385,7 @@ function Knowledge:describe_graph(time)
                         edges:append('{ ' ..
                             '"type":"' .. edgedesc .. '",' ..
                             '"from":"' .. entity.name .. '",' ..
-                            '"to":"' .. target.value.name .. '",' ..
+                            '"to":"' .. target.value.name .. '"' ..
                             '}')
                     end
                 end
@@ -394,7 +394,7 @@ function Knowledge:describe_graph(time)
     end
     return '{' ..
         '"nodes":["' .. List(Set.values(nodes)):join('","') ..'"],' ..
-        '"edges":[' .. edges:join(',') ..'],' ..
+        '"edges":[' .. edges:join(',') ..']' ..
         '}'
 end
 
