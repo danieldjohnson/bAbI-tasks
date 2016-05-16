@@ -364,18 +364,19 @@ function help_desc_type(thing)
 end
 
 function Knowledge:describe_graph(time)
-    local nodes = List()
+    local nodes = Set{}
     local edges = List()
 
     local cknowledge = self.knowledge[time]
     for entity,ent_state in pairs(cknowledge) do
         -- Ignore the phantom "knowledge" entry
         if entity ~= 'knowledge' then
-            nodes:append(entity.name)
+            nodes = nodes + Set{entity.name}
             for relation,targets in pairs(ent_state) do
                 -- Ignore the phantom "knowledge" entry
                 if relation ~= 'knowledge' then 
                     for _,target in pairs(targets) do
+                        nodes = nodes + Set{target.value.name}
                         local negate_prefix = ""
                         if not target.truth_value then
                             negate_prefix = "not_"
@@ -392,7 +393,7 @@ function Knowledge:describe_graph(time)
         end
     end
     return '{' ..
-        '"nodes":["' .. nodes:join('","') ..'"],' ..
+        '"nodes":["' .. List(Set.values(nodes)):join('","') ..'"],' ..
         '"edges":[' .. edges:join(',') ..'],' ..
         '}'
 end
