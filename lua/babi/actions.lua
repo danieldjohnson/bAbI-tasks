@@ -246,7 +246,7 @@ end
 
 function Give:update_knowledge(world, knowledge, clause,
                                actor, object, recipient)
-    knowledge[object]:set('is_in', recipient, Set{clause})
+    knowledge[object]:set('is_in', recipient, true, Set{clause})
 
     local current_knowledge = {}
     for _, entity in ipairs{actor, recipient, object} do
