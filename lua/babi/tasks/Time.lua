@@ -89,6 +89,13 @@ function Time:generate_story(world, knowledge, story)
             movements[actor][time] = story[i]
         end
     end
+
+    for i = 1, #story do
+        if not class.istype(story[i], 'Question') then
+            story[i]:perform()
+            knowledge:update(story[i])
+        end
+    end
     return story, knowledge
 end
 

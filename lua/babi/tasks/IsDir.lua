@@ -81,6 +81,13 @@ function IsDir:generate_story(world, knowledge, story)
                ask_dir, self.locations[ask_location]),
         Set{story[supporting_fact]}
     )
+
+    for i = 1, #story do
+        if not class.istype(story[i], 'Question') then
+            story[i]:perform()
+            knowledge:update(story[i])
+        end
+    end
     return story, knowledge
 end
 

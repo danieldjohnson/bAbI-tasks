@@ -66,6 +66,13 @@ function Deduction:generate_story(world, knowledge, story)
     local shuffled_story = utilities.choice(story:slice(1, 2 * #actors), 2 * #actors)
     shuffled_story:extend(utilities.choice(story:slice(2 * #actors + 1), #actors))
 
+    for i = 1, #shuffled_story do
+        if not class.istype(shuffled_story[i], 'Question') then
+            shuffled_story[i]:perform()
+            knowledge:update(shuffled_story[i])
+        end
+    end
+
     return shuffled_story, knowledge
 end
 

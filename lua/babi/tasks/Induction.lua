@@ -84,6 +84,13 @@ function Deduction:generate_story(world, knowledge, story)
                                             #story - 1)
     shuffled_story:append(story[#story])
 
+    for i = 1, #shuffled_story do
+        if not class.istype(shuffled_story[i], 'Question') then
+            shuffled_story[i]:perform()
+            knowledge:update(shuffled_story[i])
+        end
+    end
+
     return shuffled_story, knowledge
 end
 

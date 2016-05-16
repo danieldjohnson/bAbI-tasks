@@ -117,6 +117,13 @@ function PathFinding:generate_story(world, knowledge, story, config)
                'path', {target_loc, path}),
         support
     ))
+
+    for i = 1, #story do
+        if not class.istype(story[i], 'Question') then
+            story[i]:perform()
+            knowledge:update(story[i])
+        end
+    end
     return story, knowledge
 end
 

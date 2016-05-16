@@ -102,6 +102,13 @@ function PositionalReasoning:generate_story(world, knowledge, story)
             Set{story[1], story[2]}
         ))
     end
+
+    for i = 1, #story do
+        if not class.istype(story[i], 'Question') then
+            story[i]:perform()
+            knowledge:update(story[i])
+        end
+    end
     return story, knowledge
 end
 
