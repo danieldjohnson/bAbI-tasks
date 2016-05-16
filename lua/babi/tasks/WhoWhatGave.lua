@@ -61,6 +61,8 @@ function WhoWhatGave:generate_story(world, knowledge, story)
             story_length = 0
         end
     end
+
+    knowledge:augment_with_value_histories(world:get_objects(), 'is_in', false)
     return story, knowledge
 end
 

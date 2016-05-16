@@ -12,6 +12,8 @@ local List = require 'pl.List'
 local Set = require 'pl.Set'
 local tablex = require 'pl.tablex'
 
+local Entity = require 'babi.Entity'
+
 --[[-- KNOWLEDGE --]]--
 
 local EntityProperties = class('EntityProperties')
@@ -350,6 +352,37 @@ function Knowledge:describe_all()
         log:append(self:describe(t) .. '-------\n')
     end
     return log:join("")
+end
+
+function Knowledge:augment_with_value_histories(entities, property, resolve_location)
+    for _, entity in pairs(entities) do
+        local value_history = List{}
+        local records = List{}
+
+        for t = 1, self.t do -- Reverse order?
+            local value, support =
+                self.knowledge[t][entity]:get_value(property, true)
+            if resolve_location and value and value.is_actor then
+                local new_support
+                value, new_support = self.knowledge[t][value]:get_value(property, true)
+            end
+            if value and (#value_history == 0 or value_history[#value_history].name ~= value.name) then
+                value_history:append(value)
+                local record_ent = Entity("record_" .. entity.name .. "_" .. property .. "#" .. tostring(#value_history),{})
+                records:append(record_ent)
+            end
+
+            if #value_history > 0 then
+                self.knowledge[t][entity]:set("history_"..property, records[#records], true, {})
+                for i = 2,#value_history do
+                    self.knowledge[t][records[i]]:set("prev", records[i-1], true, {})
+                end
+                for i = 1,#value_history do
+                    self.knowledge[t][records[i]]:set("value", value_history[i], true, {})
+                end
+            end
+        end
+    end
 end
 
 function help_desc_type(thing)

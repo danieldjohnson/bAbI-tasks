@@ -80,6 +80,8 @@ function WhereWasObject:generate_story(world, knowledge, story)
             end
         end
     end
+
+    knowledge:augment_with_value_histories(world:get_objects(), 'is_in', true)
     return story, knowledge
 end
 

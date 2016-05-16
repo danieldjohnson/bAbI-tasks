@@ -94,7 +94,11 @@ end
 
 function Teleport:update_knowledge(world, knowledge, clause, a0, a1)
     if clause.truth_value then
-        knowledge[a0]:set('is_in', a1, true, Set{clause})
+        if clause.args[2] == "when" then
+            knowledge[a0]:set('is_in_'..string.gsub(clause.args[3],' ','-'), a1, true, Set{clause})
+        else
+            knowledge[a0]:set('is_in', a1, true, Set{clause})
+        end
     end
 end
 
