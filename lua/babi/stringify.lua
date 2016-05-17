@@ -992,9 +992,9 @@ function EvalHolding:render()
     local actor, _, objects = unpack(self:clause().args.args)
     local template = ('what is %s holding?\t'):format(actor.name)
     if #objects > 0 then
-        template = template .. stringx.join(',', tablex.map(
+        template = template .. stringx.join(',', List.sorted(tablex.map(
             function(object) return object.name end, objects
-        ))
+        )))
     else
         template = template .. 'nothing'
     end
@@ -1005,9 +1005,9 @@ function EvalHolding:render_symbolic()
     local actor, _, objects = unpack(self:clause().args.args)
     local template = ('%s hold\t'):format(actor.name)
     if #objects > 0 then
-        template = template .. stringx.join(',', tablex.map(
+        template = template .. stringx.join(',', List.sorted(tablex.map(
             function(object) return object.name end, objects
-        ))
+        )))
     else
         template = template .. 'nothing'
     end
