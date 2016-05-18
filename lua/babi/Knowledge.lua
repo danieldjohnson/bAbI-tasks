@@ -368,16 +368,17 @@ function Knowledge:augment_with_value_histories(entities, property, resolve_loca
             end
             if value and (#value_history == 0 or value_history[#value_history].name ~= value.name) then
                 value_history:append(value)
-                local record_ent = Entity("record_" .. entity.name .. "_" .. property .. "#" .. tostring(#value_history),{})
+                local record_ent = Entity("record_" .. property .. "#" .. entity.name .. "_" .. tostring(#value_history),{})
                 records:append(record_ent)
             end
 
             if #value_history > 0 then
-                self.knowledge[t][entity]:set("history_"..property, records[#records], true, {})
+                self.knowledge[t][entity]:set("history_now_"..property, records[#records], true, {})
                 for i = 2,#value_history do
                     self.knowledge[t][records[i]]:set("prev", records[i-1], true, {})
                 end
                 for i = 1,#value_history do
+                    self.knowledge[t][entity]:add("history_"..property, records[i], true, {})
                     self.knowledge[t][records[i]]:set("value", value_history[i], true, {})
                 end
             end
