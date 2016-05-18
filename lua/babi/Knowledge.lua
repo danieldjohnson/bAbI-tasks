@@ -398,6 +398,8 @@ function help_desc_type(thing)
 end
 
 function Knowledge:describe_graph(time)
+    local flip_key = { s="n", e="w" }
+
     local nodes = Set{}
     local edges = List()
 
@@ -415,11 +417,19 @@ function Knowledge:describe_graph(time)
                         if not target.truth_value then
                             negate_prefix = "not_"
                         end
-                        local edgedesc = negate_prefix .. help_desc_type(entity) .. '_' .. relation .. '_' .. help_desc_type(target.value)
+
+                        local from = entity
+                        local to = target.value
+                        if flip_key[relation] then
+                            relation = flip_key[relation]
+                            from = target.value
+                            to = entity
+                        end
+                        local edgedesc = negate_prefix .. help_desc_type(from) .. '_' .. relation .. '_' .. help_desc_type(to)
                         edges:append('{ ' ..
                             '"type":"' .. edgedesc .. '",' ..
-                            '"from":"' .. entity.name .. '",' ..
-                            '"to":"' .. target.value.name .. '"' ..
+                            '"from":"' .. from.name .. '",' ..
+                            '"to":"' .. to.name .. '"' ..
                             '}')
                     end
                 end
