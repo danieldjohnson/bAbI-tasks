@@ -407,12 +407,11 @@ function Knowledge:describe_graph(time)
     for entity,ent_state in pairs(cknowledge) do
         -- Ignore the phantom "knowledge" entry
         if entity ~= 'knowledge' then
-            nodes = nodes + Set{entity.name}
             for relation,targets in pairs(ent_state) do
                 -- Ignore the phantom "knowledge" entry
                 if relation ~= 'knowledge' then 
                     for _,target in pairs(targets) do
-                        nodes = nodes + Set{target.value.name}
+                        nodes = nodes + Set{entity.name, target.value.name}
                         local negate_prefix = ""
                         if not target.truth_value then
                             negate_prefix = "not_"
