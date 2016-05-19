@@ -368,7 +368,7 @@ function Knowledge:augment_with_value_histories(entities, property, resolve_loca
             end
             if value and (#value_history == 0 or value_history[#value_history].name ~= value.name) then
                 value_history:append(value)
-                local record_ent = Entity("record_" .. property .. "#" .. entity.name .. "_" .. tostring(#value_history),{})
+                local record_ent = Entity("record_" .. property .. "#" .. entity.name .. "_" .. tostring(#value_history),{is_record=true})
                 records:append(record_ent)
             end
 
@@ -388,7 +388,7 @@ end
 
 function help_desc_type(thing)
     local has = List()
-    local relevant_types = { 'actor', 'location', 'gettable', 'motivation', 'animal'}
+    local relevant_types = { 'actor', 'location', 'gettable', 'motivation', 'animal', 'record'}
     for _, t in pairs(relevant_types) do
         if thing['is_' .. t] then
             has:append(t)
