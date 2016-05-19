@@ -1430,6 +1430,18 @@ local function stringify(story, knowledge, config)
             if not PUNCTUATION[line:sub(-1, -1)] then
                 line = line .. '.'
             end
+
+            -- Add knowledge graph output
+            if config.knowledge_graph then
+                local target = story[i + template.clauses - 1]
+                local knowledge_idx = tablex.find_if(knowledge.story,  function(v) return rawequal(v, target) end)
+                if knowledge_idx then
+                    local graph_line = knowledge:describe_graph(knowledge_idx)
+                    line = line .. '=' .. graph_line
+                else
+                    line = line .. "={}"
+                end
+            end
         end
         lines:append(line)
 
@@ -1449,24 +1461,6 @@ local function stringify(story, knowledge, config)
     lines = add_line_numbers(lines)
 
     local out = stringx.join('\n', lines)
-
-    -- Possibly generate graph
-    if config.knowledge_graph then
-        local graph_lines = {}
-        for t = 1, knowledge.t do
-            local graph_line = knowledge:describe_graph(t)
-            graph_lines[clause_lines[knowledge.story[t]]] = graph_line
-        end
-
-        graph_lines_for_print = List()
-
-        for i,l in pairs(graph_lines) do
-            graph_lines_for_print:append('> ' .. i .. ' ' .. l)
-        end
-
-        out = out .. '\n' .. stringx.join('\n', graph_lines_for_print)
-    end
-
     return out
 end
 
