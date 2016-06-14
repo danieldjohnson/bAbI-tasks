@@ -386,6 +386,36 @@ function Knowledge:augment_with_value_histories(entities, property, resolve_loca
     end
 end
 
+function Knowledge:augment_with_changed_pointers(entities, property, groupby)
+    local record_ent = Entity("changed_ptr", {is_record=true})
+    local last_changed = List{}
+    for t = 1, self.t, groupby do
+        local changed = List{}
+        for tt = t, t+groupby-1 do
+            for _, entity in pairs(entities) do
+                local cur_values, cur_support = self.knowledge[tt][entity]:get_values(property, true)
+                local old_values
+                if t == 1 then
+                    old_values = List{}
+                else
+                    old_values = self.knowledge[tt-1][entity]:get_values(property, false)
+                end
+                if Set(old_values) ~= Set(cur_values) then
+                    changed:append(entity)
+                end
+            end
+        end
+        if #changed > 0 then
+            last_changed = changed
+        else
+            changed = last_changed
+        end
+        for i=1,#changed do
+            self.knowledge[t+groupby-1][record_ent]:add("changed_" .. property, changed[i], true, {})
+        end
+    end
+end
+
 function help_desc_type(thing)
     local has = List()
     local relevant_types = { 'actor', 'location', 'gettable', 'motivation', 'animal', 'record'}
