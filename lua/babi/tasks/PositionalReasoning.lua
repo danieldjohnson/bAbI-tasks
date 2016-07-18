@@ -27,7 +27,7 @@ function PositionalReasoning:new_world()
     local world = World()
     for _, shape in pairs{'square', 'rectangle', 'triangle', 'sphere'} do
         for _, color in pairs{'red', 'blue', 'pink', 'yellow'} do
-            world:create_entity(color .. ' ' .. shape, {shape=shape,
+            world:create_entity(color .. '_' .. shape, {shape=shape,
                                                         has_color=true,
                                                         color=color})
         end
