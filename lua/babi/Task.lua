@@ -27,7 +27,7 @@ function Task:generate(config)
         num_questions = num_questions + 1
       end
     end
-    return stringify(story, knowledge, config), num_questions
+    return stringify(story, knowledge, config), num_questions, #story
 end
 
 return Task

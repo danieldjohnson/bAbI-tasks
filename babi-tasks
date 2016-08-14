@@ -20,9 +20,11 @@ local function generate(task_name, number, output, user_config)
     math.randomseed(os.time())
     local requested = number
     while number > 0 do
-        story, num_questions = task:generate(config)
-        output:write(story .. '\n')
-        number = number - num_questions
+        story, num_questions, storylen = task:generate(config)
+        if not (config.limit_story and storylen > config.limit_story) then
+            output:write(story .. '\n')
+            number = number - num_questions
+        end
     end
     if number < 0 then
         print(("WARNING: %s questions generated"):format(requested - number))
