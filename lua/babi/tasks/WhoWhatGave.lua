@@ -53,7 +53,6 @@ function WhoWhatGave:generate_story(world, knowledge, story)
         story_length = story_length + 1
         clause:perform()
         story:append(clause)
-        knowledge:update(clause)
         if story_length > 2 and class.istype(clause.action, 'Give') then
             story = story:slice(1, -story_length - 1):extend(utilities.choice(story:slice(-story_length), story_length))
             story:append(Question('eval', clause, Set{clause}))
@@ -61,7 +60,12 @@ function WhoWhatGave:generate_story(world, knowledge, story)
             story_length = 0
         end
     end
-
+    for i = 1, #story do
+        if not class.istype(story[i], 'Question') then
+            story[i]:perform()
+            knowledge:update(story[i])
+        end
+    end
     knowledge:augment_with_value_histories(world:get_objects(), 'is_in', false)
     return story, knowledge
 end
