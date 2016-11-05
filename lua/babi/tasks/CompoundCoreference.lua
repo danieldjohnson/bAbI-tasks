@@ -64,7 +64,7 @@ function CompoundCoreference:generate_story(world, knowledge, story)
         ))
     end
 
-    knowledge:augment_with_changed_pointers(world:get_actors(), 'is_in', 2)
+    -- knowledge:augment_with_changed_pointers(world:get_actors(), 'is_in', 2)
     return story, knowledge
 end
 

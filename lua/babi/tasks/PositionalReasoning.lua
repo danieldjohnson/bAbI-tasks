@@ -83,7 +83,7 @@ function PositionalReasoning:generate_story(world, knowledge, story)
     end
 
     -- Now ask questions about the shapes
-    for i = 1, 8 do
+    for i = 1, 2 do
         local q1, q2 = unpack(torch.randperm(num_shapes):sub(1, 2):totable())
         local q1, q2 = chosen_shapes[q1], chosen_shapes[q2]
         local loc1, loc2 = grid.objects[q1], grid.objects[q2]

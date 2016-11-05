@@ -54,7 +54,7 @@ function BasicCoreference:generate_story(world, knowledge, story)
         )
     end
 
-    knowledge:augment_with_changed_pointers(world:get_actors(), 'is_in', 1)
+    -- knowledge:augment_with_changed_pointers(world:get_actors(), 'is_in', 1)
     return story, knowledge
 end
 
