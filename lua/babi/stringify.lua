@@ -28,7 +28,7 @@ local FULL_DIRECTIONS = {
     },
     relative={
         n='above', s='below',
-        e='to the left of', w='to the right of'
+        w='to the left of', e='to the right of'
     }
 }
 local NUMERALS = {
@@ -634,11 +634,11 @@ end
 function EvalDir:render()
     local location, dir, target = unpack(self:clause().args.args)
     local full_directions = FULL_DIRECTIONS[self.config.directions]
-    local tmpl1 = 'what is %s of the %s?\t%s'
+    local tmpl1 = 'what is %s the %s?\t%s'
     tmpl1 = tmpl1:format(full_directions[dir],
                          target.name, location.name)
 
-    local tmpl2 = 'what is the %s %s of?\t%s'
+    local tmpl2 = 'what is the %s %s?\t%s'
     tmpl2 = tmpl2:format(location.name,
                          full_directions[OPPOSITE_DIRECTIONS[dir]],
                          target.name)
@@ -706,7 +706,7 @@ end
 function Dir:render()
     local loc1, dir, loc2 = unpack(self:clause().args)
     local full_directions = FULL_DIRECTIONS[self.config.directions]
-    local tmpl = 'the %s is %s of the %s'
+    local tmpl = 'the %s is %s the %s'
     return {tmpl:format(loc2.name, full_directions[dir], loc1.name),
             tmpl:format(loc1.name,
                         full_directions[OPPOSITE_DIRECTIONS[dir]],
